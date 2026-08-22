@@ -1,7 +1,7 @@
 <!--
 Sync Impact Report:
 - Version change: 1.0.0 → 1.1.0
-- Modified principles: Principle II (scope correction: removed inventory-condition references); Quality Standards expanded with architecture and persistence constraints
+- Modified principles: Principle II (scope correction: removed out-of-scope stock references); Quality Standards expanded with architecture and persistence constraints
 - Added sections: System & Architecture Constraints (polyrepo, MySQL procedures, SDD governance)
 - Removed sections: none
 - Follow-up TODOs: none
