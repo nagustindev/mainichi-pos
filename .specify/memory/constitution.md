@@ -1,9 +1,9 @@
 <!--
 Sync Impact Report:
-- Version change: 0.0.0 → 1.0.0
-- Modified principles: N/A (new constitution scaffold replaced with final principles)
-- Added sections: Core Principles, Quality Standards, Development Workflow
-- Removed sections: placeholder scaffold tokens and example guidance
+- Version change: 1.0.0 → 1.1.0
+- Modified principles: Principle II (scope correction: removed inventory-condition references); Quality Standards expanded with architecture and persistence constraints
+- Added sections: System & Architecture Constraints (polyrepo, MySQL procedures, SDD governance)
+- Removed sections: none
 - Follow-up TODOs: none
 -->
 
@@ -17,7 +17,7 @@ Every feature, fix, and refactor MUST be readable, explicit, and maintainable. W
 Rationale: maintainability reduces defect risk and keeps the POS fast to evolve as business rules change.
 
 ### II. Test-First and Regression Safety
-No behavior change is considered complete without a failing or updated test that captures the intended requirement before implementation. Unit, integration, and UI-level tests MUST cover critical sales flows, state transitions, and edge cases such as invalid quantities, empty cart states, and failed payment or inventory conditions.
+No behavior change is considered complete without a failing or updated test that captures the intended requirement before implementation. Unit, integration, and UI-level tests MUST cover critical sales flows, state transitions, and edge cases such as invalid quantities, empty cart states, and failed payment scenarios.
 
 Rationale: a POS system is operationally sensitive; untested changes create financial and customer-facing risk.
 
@@ -39,10 +39,13 @@ Rationale: POS software must remain stable across staff changes, seasonal promos
 ## Quality Standards
 All work MUST follow the repository's linting and formatting rules, and any exception MUST be explained in the PR with a clear business or technical justification. Components MUST prefer reusable patterns, clearly scoped state, and deterministic data flow. Error states, empty states, and loading states MUST be visible and understandable to the cashier. Accessibility is a default requirement, not a follow-up item; focus states, labels, and contrast must meet product and WCAG-aligned expectations. Security-sensitive data, including payment or transaction details, MUST never be exposed in logs, UI state, or client-side debugging output.
 
+### System & Architecture Constraints
+The architecture MUST remain decoupled across repositories: `mainichi-pos` is the React/Vite/Tailwind frontend, and `mainichi-pos-api` is the Java/Spring Boot backend. The frontend MUST consume backend contracts through explicit API contracts rather than implicit service coupling. Data persistence MUST be implemented using Strict Procedural Cloud MySQL, with zero ORM and no Hibernate usage. Java services MUST use `JdbcClient` exclusively to invoke atomic stored procedures, and database logic MUST remain centered on server-side procedures rather than application-layer persistence abstraction. Spec-First delivery is mandatory under `/specs`; OpenAPI and JSON Schema definitions MUST be authored before implementation, and Spring controllers, React API services, and payload validation MUST maintain strict contract parity.
+
 ## Development Workflow
 Features and fixes MUST be developed in small, reviewable iterations with explicit acceptance criteria. Changes to product data, pricing logic, cart behavior, or checkout flow require validation against the real user journey and at least one regression check for the impacted path. Merges are allowed only when tests are green, reviews are completed, and the change does not introduce a user-visible regression or performance cliff. The team MUST keep documentation and comments current with behavior so the system remains understandable during onboarding and maintenance.
 
 ## Governance
 This Constitution supersedes ad hoc development practices for Mainichi POS. Any amendment requires a documented rationale, a clear impact review, and agreement from the maintainers before the change becomes effective. Versioning follows semantic versioning: MAJOR for incompatible governance or principle changes, MINOR for added or materially expanded principles, and PATCH for clarifying or non-semantic refinements. Compliance is reviewed during pull requests, architecture decisions, and release readiness checks; if a change conflicts with this Constitution, the conflict MUST be resolved before merge. The project will maintain a single source of truth for governance in this document and will update the version and amendment date whenever a material change is made.
 
-**Version**: 1.0.0 | **Ratified**: 2026-08-21 | **Last Amended**: 2026-08-21
+**Version**: 1.1.0 | **Ratified**: 2026-08-21 | **Last Amended**: 2026-08-21
